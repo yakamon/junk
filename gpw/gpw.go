@@ -1,5 +1,9 @@
 package main
 
+/*
+TODO 現状、単純に引数を取得しているが、コマンドラインオプションを設定できるようにしたい
+*/
+
 import (
 	"crypto/rand"
 	"fmt"
