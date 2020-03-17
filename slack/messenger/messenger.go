@@ -17,7 +17,7 @@ func New(webhookURL string) *Messenger {
 }
 
 // Send sends given message with slack incoming webhook.
-func (msgr *Messenger) Send(m *Message) (*http.Response, error) {
+func (msgr *Messenger) Send(m Message) (*http.Response, error) {
 	body, err := json.Marshal(m)
 	if err != nil {
 		return nil, err
