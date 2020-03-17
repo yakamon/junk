@@ -36,7 +36,7 @@ func (msgr *Messenger) Send(m *Message) (*http.Response, error) {
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer res.Body.Close()
 
