@@ -15,7 +15,7 @@ const (
 func GetNewPosts(duration time.Duration) []*gofeed.Item {
 	now := time.Now()
 	parser := gofeed.NewParser()
-	feed, _ := parser.ParseUrl(AppleNewsroomRssURL)
+	feed, _ := parser.ParseURL(AppleNewsroomRssURL)
 
 	var newPosts []*gofeed.Item
 	for _, item := range feed.Items {
