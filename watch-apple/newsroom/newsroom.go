@@ -11,13 +11,13 @@ const AppleNewsroomURL = "https://www.apple.com/jp/newsroom/rss-feed.rss"
 
 var now = time.Now()
 
-// GetNewPosts checks if there are new posts on the Apple Newsroom and return them if exist.
-func GetNewPosts(duration time.Duration) (posts []*gofeed.Item) {
+// GetPosts gets news from Apple Newsroom
+func GetPosts(after time.Time) (posts []*gofeed.Item) {
 	parser := gofeed.NewParser()
 	feed, _ := parser.ParseURL(AppleNewsroomURL)
 	for _, item := range feed.Items {
 		updated, _ := time.Parse(time.RFC3339, item.Updated)
-		if now.Sub(updated) < duration {
+		if updated.After(after) {
 			posts = append(posts, item)
 		}
 	}
