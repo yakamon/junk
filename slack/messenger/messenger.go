@@ -6,12 +6,18 @@ import (
 	"net/http"
 )
 
+// ContentType is format declaration of Content.
+const (
+	ContentTypeMarkdown  = "mrkdwn"
+	ContentTypePlainText = "plain_text"
+)
+
 // Messenger is slack incoming webhook client.
 type Messenger struct {
 	WebhookURL string
 }
 
-// New returns a new Messenger
+// New returns a new Messenger.
 func New(webhookURL string) *Messenger {
 	return &Messenger{webhookURL}
 }
