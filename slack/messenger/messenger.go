@@ -55,15 +55,38 @@ type Section struct {
 	Text Content `json:"text"`
 }
 
+// NewSection initializes a new section block with content c.
+func NewSection(c Content) Section {
+	return Section{
+		Type: "section",
+		Text: c,
+	}
+}
+
 // Context is context block of slack message.
 type Context struct {
 	Type     string    `json:"type"`
 	Elements []Content `json:"elements"`
 }
 
+// NewContext initializes a new context block with elements.
+func NewContext(elements []Content) Context {
+	return Context{
+		Type:     "context",
+		Elements: elements,
+	}
+}
+
 // Divider is divider block of slack message.
 type Divider struct {
 	Type string `json:"type"`
+}
+
+// NewDivider initializes a new divider block.
+func NewDivider() Divider {
+	return Divider{
+		Type: "divider",
+	}
 }
 
 // Content is common structure of block content.
