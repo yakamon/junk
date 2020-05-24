@@ -10,3 +10,9 @@
 [submodule "continuous_timer"]
 	path = continuous_timer
 	url = git@github.com:yakamon/continuous_timer
+[submodule "pwgen"]
+	path = pwgen
+	url = git@github.com:yakamon/pwgen
+[submodule "argparser"]
+	path = argparser
+	url = git@github.com:yakamon/argparser
