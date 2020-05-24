@@ -1,0 +1,28 @@
+[submodule "bar"]
+	path = bar
+	url = git@github.com:yakamon/bar
+	branch = master
+[submodule "realpath"]
+	path = realpath
+	url = git@github.com:yakamon/realpath
+	branch = master
+[submodule "continuous_timer"]
+	path = continuous_timer
+	url = git@github.com:yakamon/continuous_timer
+	branch = master
+[submodule "kanjinum"]
+	path = kanjinum
+	url = git@github.com:yakamon/kanjinum
+	branch = master
+[submodule "argparser"]
+	path = argparser
+	url = git@github.com:yakamon/argparser
+	branch = master
+[submodule "pwgen"]
+	path = pwgen
+	url = git@github.com:yakamon/pwgen
+	branch = master
+[submodule "goconn"]
+	path = goconn
+	url = git@github.com:yakamon/goconn
+	branch = master
