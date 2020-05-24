@@ -1,0 +1,12 @@
+[submodule "realpath"]
+	path = realpath
+	url = git@github.com:yakamon/realpath
+[submodule "bar"]
+	path = bar
+	url = git@github.com:yakamon/bar
+[submodule "kanjinum"]
+	path = kanjinum
+	url = git@github.com:yakamon/kanjinum
+[submodule "continuous_timer"]
+	path = continuous_timer
+	url = git@github.com:yakamon/continuous_timer
