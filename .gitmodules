@@ -18,10 +18,6 @@
 	path = argparser
 	url = git@github.com:yakamon/argparser
 	branch = master
-[submodule "pwgen"]
-	path = pwgen
-	url = git@github.com:yakamon/pwgen
-	branch = master
 [submodule "goconn"]
 	path = goconn
 	url = git@github.com:yakamon/goconn
