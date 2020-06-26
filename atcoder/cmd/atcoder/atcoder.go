@@ -28,9 +28,15 @@ func main() {
 	}
 }
 
-func findInputSrc(src string) (inputSrcList []string) {
+func findInputSrc(src string) []string {
 	dir := filepath.Dir(src)
 	inputDir := filepath.Join(dir, "input")
+
+	if !fileExists(inputDir) {
+		return nil
+	}
+
+	var inputSrcList []string
 	err := filepath.Walk(inputDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -52,8 +58,6 @@ func buildAndRun(src string, inputSrcList []string) {
 	if len(inputSrcList) == 0 {
 		return
 	}
-
-	fmt.Println(inputSrcList)
 
 	switch filepath.Ext(src) {
 	case ".cpp":
@@ -77,55 +81,59 @@ func buildAndRun(src string, inputSrcList []string) {
 func buildAndRunCpp(src string, inputSrcList []string) error {
 	out := strings.TrimSuffix(src, filepath.Ext(src))
 
-	buildCmd := stdoutCommand("g++", "-o", out, src)
+	buildCmd := exec.Command("g++", "-o", out, src)
 	if err := buildCmd.Run(); err != nil {
 		return fmt.Errorf("failed to build C++ file: %v", err)
 	}
-	defer removeFile(out)
+	defer fileRemove(out)
 
 	for _, inputSrc := range inputSrcList {
-		cmdStr := fmt.Sprintf("%s < %s", out, inputSrc)
-		runCmd := stdoutCommand("sh", "-c", cmdStr)
+		runCmd := exec.Command("sh", "-c", fmt.Sprintf("%s < %s", out, inputSrc))
 		if err := runCommand(runCmd, inputSrc); err != nil {
 			return fmt.Errorf("some error occurred while running C++ program: %v", err)
 		}
 	}
+
 	return nil
 }
 
 func buildAndRunGo(src string, inputSrcList []string) error {
 	out := strings.TrimSuffix(src, filepath.Ext(src))
 
-	buildCmd := stdoutCommand("go", "build", "-o", out, src)
+	buildCmd := exec.Command("go", "build", "-o", out, src)
 	if err := buildCmd.Run(); err != nil {
 		return fmt.Errorf("failed to build Go file: %v", err)
 	}
-	defer removeFile(out)
+	defer fileRemove(out)
 
 	for _, inputSrc := range inputSrcList {
-		cmdStr := fmt.Sprintf("%s < %s", out, inputSrc)
-		runCmd := stdoutCommand("sh", "-c", cmdStr)
+		runCmd := exec.Command("sh", "-c", fmt.Sprintf("%s < %s", out, inputSrc))
 		if err := runCommand(runCmd, inputSrc); err != nil {
 			return fmt.Errorf("some error occurred while running Go program: %v", err)
 		}
 	}
+
 	return nil
 }
 
 func buildAndRunPy(src string, inputSrcList []string) error {
 	for _, inputSrc := range inputSrcList {
-		cmdStr := fmt.Sprintf("python %s < %s", src, inputSrc)
-		runCmd := stdoutCommand("sh", "-c", cmdStr)
+		runCmd := exec.Command("sh", "-c", fmt.Sprintf("python %s < %s", src, inputSrc))
 		if err := runCommand(runCmd, inputSrc); err != nil {
 			return fmt.Errorf("some error occurred while running Python program: %v", err)
 		}
 	}
+
 	return nil
 }
 
-func stdoutCommand(name string, args ...string) *exec.Cmd {
-	cmd := exec.Command(name, args...)
-	return cmd
+func copyToClipboard(src string) error {
+	pbcopyCmd := exec.Command("sh", "-c", fmt.Sprintf("cat %s | pbcopy", src))
+	if err := pbcopyCmd.Run(); err != nil {
+		return fmt.Errorf("src copy failed: %v", err)
+	}
+
+	return nil
 }
 
 func runCommand(cmd *exec.Cmd, inputSrc string) error {
@@ -146,34 +154,28 @@ func runCommand(cmd *exec.Cmd, inputSrc string) error {
 	return nil
 }
 
-func printBar(rep, message string) {
+func printBar(rep, mes string) {
 	bar := bytes.Repeat([]byte(rep), 100)
-	barLen := len(string(bar))
-	messageLen := len(message)
+	messageLen := len(mes)
 	if messageLen == 0 {
 		fmt.Println(string(bar))
 		return
 	}
+	barLen := len(string(bar))
 	start := (barLen - messageLen - 1) / 2
-	copy(bar[start:start+messageLen+2], " "+message+" ")
+	copy(bar[start:start+messageLen+2], " "+mes+" ")
 	fmt.Println(string(bar))
 }
 
-func removeFile(src string) {
-	if _, err := os.Open(src); err != nil {
-		fmt.Printf("os.Open(%s) failed: %v", src, err)
-	} else {
-		if err := os.Remove(src); err != nil {
-			fmt.Printf("os.Remove(%s) failed: %v", src, err)
+func fileRemove(filename string) {
+	if fileExists(filename) {
+		if err := os.Remove(filename); err != nil {
+			fmt.Printf("os.Remove(%s) failed: %v", err)
 		}
 	}
 }
 
-func copyToClipboard(src string) error {
-	cmdStr := fmt.Sprintf("cat %s | pbcopy", src)
-	copyCmd := stdoutCommand("sh", "-c", cmdStr)
-	if err := copyCmd.Run(); err != nil {
-		return fmt.Errorf("src copy failed: %v", err)
-	}
-	return nil
+func fileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	return err == nil
 }
